@@ -12,8 +12,18 @@ tasksList.addEventListener("click", doneTask);
 function addTask(event) {
   event.preventDefault();
   const taskText = taskInput.value;
-  const taskHTML = `<li class="list-group-item d-flex justify-content-between task-item">
-					<span class="task-title">${taskText}</span>
+  const newTask = {
+    id: Date.now(),
+    text: taskText,
+    done: false,
+  };
+
+  tasks.push(newTask);
+  console.log(tasks);
+  const cssClass = newTask.done ? "task-title task-title--done" : "task-title";
+
+  const taskHTML = `<li id="${newTask.id}" class="list-group-item d-flex justify-content-between task-item">
+					<span class="${cssClass}">${newTask.text}</span>
 					<div class="task-item__buttons">
 						<button type="button" data-action="done" class="btn-action">
 							<img src="./img/tick.svg" alt="Done" width="18" height="18">
@@ -37,14 +47,17 @@ function addTask(event) {
 function deleteTask(event) {
   if (event.target.dataset.action !== "delete") return;
 
-  if (event.target.dataset.action === "delete") {
-    console.log("task removed");
-    const parentNode = event.target.closest(".list-group-item");
-    parentNode.remove();
+  const parenNode = event.target.closest(".list-group-item");
 
-    if (tasksList.children.length === 1) {
-      emptyList.classList.remove("none");
-    }
+  const id = Number(parenNode.id);
+
+  const index = tasks.findIndex((task) => task.id === id);
+
+  tasks.splice(index, 1);
+  parenNode.remove();
+
+  if (tasksList.children.length === 1) {
+    emptyList.classList.remove("none");
   }
 }
 
@@ -52,9 +65,9 @@ function doneTask(event) {
   if (event.target.dataset.action !== "done") return;
 
   if (event.target.dataset.action === "done") {
-    const parentNode = event.target.closest(".list-group-item");
-    const taskTitle = parentNode.querySelector(".task-title");
+    const parenNode = event.target.closest(".list-group-item");
+    const taskTitle = parenNode.querySelector(".task-title");
     taskTitle.classList.toggle("task-title--done");
-    console.log(parentNode);
+    console.log(parenNode);
   }
 }
