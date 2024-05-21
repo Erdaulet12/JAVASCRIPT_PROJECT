@@ -69,12 +69,11 @@ function doneTask(event) {
 
   const parenNode = event.target.closest(".list-group-item");
 
-  const id = parenNode.id;
-  tasks.find(function (task) {
-    if (task.id === id) {
-      return true;
-    }
-  });
+  const id = Number(parenNode.id);
+  const task = tasks.find((task) => task.id === id);
+
+  task.done = !task.done;
+
   console.log(task);
 
   const taskTitle = parenNode.querySelector(".task-title");
