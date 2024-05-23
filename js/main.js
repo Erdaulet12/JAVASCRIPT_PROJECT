@@ -7,25 +7,8 @@ let tasks = [];
 
 if (localStorage.getItem("tasks")) {
   tasks = JSON.parse(localStorage.getItem("tasks"));
+  tasks.forEach((task) => renderTask(task));
 }
-
-tasks.forEach(function (task) {
-  const cssClass = task.done ? "task-title task-title--done" : "task-title";
-
-  const taskHTML = `<li id="${task.id}" class="list-group-item d-flex justify-content-between task-item">
-					<span class="${cssClass}">${task.text}</span>
-					<div class="task-item__buttons">
-						<button type="button" data-action="done" class="btn-action">
-							<img src="./img/tick.svg" alt="Done" width="18" height="18">
-						</button>
-						<button type="button" data-action="delete" class="btn-action">
-							<img src="./img/cross.svg" alt="Done" width="18" height="18">
-						</button>
-					</div>
-				</li>`;
-
-  tasksList.insertAdjacentHTML("beforeend", taskHTML);
-});
 
 checkList();
 form.addEventListener("submit", addTask);
@@ -42,24 +25,10 @@ function addTask(event) {
   };
 
   tasks.push(newTask);
-  localStorage();
-  console.log(tasks);
-  const cssClass = newTask.done ? "task-title task-title--done" : "task-title";
+  saveToLocalStorage();
+  renderTask(newTask);
 
-  const taskHTML = `<li id="${newTask.id}" class="list-group-item d-flex justify-content-between task-item">
-					<span class="${cssClass}">${newTask.text}</span>
-					<div class="task-item__buttons">
-						<button type="button" data-action="done" class="btn-action">
-							<img src="./img/tick.svg" alt="Done" width="18" height="18">
-						</button>
-						<button type="button" data-action="delete" class="btn-action">
-							<img src="./img/cross.svg" alt="Done" width="18" height="18">
-						</button>
-					</div>
-				</li>`;
-  console.log(taskHTML);
   console.log("task added");
-  tasksList.insertAdjacentHTML("beforeend", taskHTML);
   taskInput.value = "";
   taskInput.focus();
   checkList();
@@ -74,7 +43,7 @@ function deleteTask(event) {
 
   tasks = tasks.filter((task) => task.id !== id);
 
-  localStorage();
+  saveToLocalStorage();
 
   parenNode.remove();
 
@@ -94,7 +63,7 @@ function doneTask(event) {
 
   task.done = !task.done;
 
-  localStorage();
+  saveToLocalStorage();
 
   console.log(task);
 
@@ -116,6 +85,24 @@ function checkList() {
   }
 }
 
-function localStorage() {
+function saveToLocalStorage() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+function renderTask(task) {
+  const cssClass = task.done ? "task-title task-title--done" : "task-title";
+
+  const taskHTML = `<li id="${task.id}" class="list-group-item d-flex justify-content-between task-item">
+					<span class="${cssClass}">${task.text}</span>
+					<div class="task-item__buttons">
+						<button type="button" data-action="done" class="btn-action">
+							<img src="./img/tick.svg" alt="Done" width="18" height="18">
+						</button>
+						<button type="button" data-action="delete" class="btn-action">
+							<img src="./img/cross.svg" alt="Done" width="18" height="18">
+						</button>
+					</div>
+				</li>`;
+
+  tasksList.insertAdjacentHTML("beforeend", taskHTML);
 }
