@@ -4,6 +4,29 @@ const tasksList = document.querySelector("#tasksList");
 const emptyList = document.querySelector("#emptyList");
 
 let tasks = [];
+
+if (localStorage.getItem("tasks")) {
+  tasks = JSON.parse(localStorage.getItem("tasks"));
+}
+
+tasks.forEach(function (task) {
+  const cssClass = task.done ? "task-title task-title--done" : "task-title";
+
+  const taskHTML = `<li id="${task.id}" class="list-group-item d-flex justify-content-between task-item">
+					<span class="${cssClass}">${task.text}</span>
+					<div class="task-item__buttons">
+						<button type="button" data-action="done" class="btn-action">
+							<img src="./img/tick.svg" alt="Done" width="18" height="18">
+						</button>
+						<button type="button" data-action="delete" class="btn-action">
+							<img src="./img/cross.svg" alt="Done" width="18" height="18">
+						</button>
+					</div>
+				</li>`;
+
+  tasksList.insertAdjacentHTML("beforeend", taskHTML);
+});
+
 checkList();
 form.addEventListener("submit", addTask);
 tasksList.addEventListener("click", deleteTask);
@@ -19,6 +42,7 @@ function addTask(event) {
   };
 
   tasks.push(newTask);
+  localStorage();
   console.log(tasks);
   const cssClass = newTask.done ? "task-title task-title--done" : "task-title";
 
@@ -38,6 +62,7 @@ function addTask(event) {
   tasksList.insertAdjacentHTML("beforeend", taskHTML);
   taskInput.value = "";
   taskInput.focus();
+  checkList();
 }
 
 function deleteTask(event) {
@@ -48,6 +73,8 @@ function deleteTask(event) {
   const id = Number(parenNode.id);
 
   tasks = tasks.filter((task) => task.id !== id);
+
+  localStorage();
 
   parenNode.remove();
 
@@ -67,13 +94,15 @@ function doneTask(event) {
 
   task.done = !task.done;
 
+  localStorage();
+
   console.log(task);
 
   const taskTitle = parenNode.querySelector(".task-title");
   taskTitle.classList.toggle("task-title--done");
 }
 
-function checkList(event) {
+function checkList() {
   if (tasks.length === 0) {
     const EmptyHTMLList = `<li id="emptyList" class="list-group-item empty-list">
 					<img src="./img/leaf.svg" alt="Empty" width="48" class="mt-3">
@@ -85,4 +114,8 @@ function checkList(event) {
     const emptyElementList = document.querySelector("#emptyList");
     emptyElementList ? emptyElementList.remove() : null;
   }
+}
+
+function localStorage() {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
 }
