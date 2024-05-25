@@ -116,7 +116,14 @@ body.active {
     color: #333;
 }
 
-.form__input {
+.login_input {
+    width: 100%;
+    padding: 10px;
+    border: solid 1px #333;
+    font-size: inherit;
+}
+
+.password_input {
     width: 100%;
     padding: 10px;
     border: solid 1px #333;
